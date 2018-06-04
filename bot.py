@@ -1,3 +1,4 @@
+import logging
 import re
 
 from telegram.ext import Updater, CommandHandler
@@ -12,6 +13,9 @@ def plant(bot, update):
     update.message.reply_text('The plants humidity is {0:.0f}%'.format(humidity))
 
 
+logging.basicConfig(
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    level=logging.INFO)
 updater = Updater(config.telegram_api)
 updater.dispatcher.add_handler(CommandHandler('plant', plant))
 updater.start_polling()
