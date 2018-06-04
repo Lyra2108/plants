@@ -6,18 +6,21 @@ from telegram import InlineKeyboardButton, InlineKeyboardMarkup, InlineQueryResu
 from telegram.ext import Updater, CommandHandler, CallbackQueryHandler, InlineQueryHandler
 
 import config
-from api.plant import get_humidity
+from api.plant import get_humidity, Plants
 
 
-def plant(bot, update):
+def plant_response(bot, update):
     plant_number = re.sub('^/plant ', '', update.message.text)
     if plant_number.isdigit():
-        humidity = get_humidity(plant_number)
-        update.message.reply_text('The plants humidity is {0:.0f}%'.format(humidity))
-    else:
-        keyboard = [[InlineKeyboardButton("Minze", callback_data='10')]]
-        reply_markup = InlineKeyboardMarkup(keyboard)
-        update.message.reply_text('Please choose:', reply_markup=reply_markup)
+        plants = Plants.get_plants(plant_number)
+        if plants:
+            humidity = get_humidity(plants[0].port)
+            update.message.reply_text('The plants humidity is {0:.0f}%'.format(humidity))
+            return
+
+    keyboard = [[InlineKeyboardButton(plant.name, callback_data=plant.port) for plant in Plants.all()]]
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    update.message.reply_text('Please choose:', reply_markup=reply_markup)
 
 
 def selected_plant(bot, update):
@@ -28,12 +31,12 @@ def selected_plant(bot, update):
 
 
 def inline_query(bot, update):
-    results = [
-        InlineQueryResultArticle(
-            id=uuid4(),
-            title="Minze",
-            input_message_content=InputTextMessageContent(
-                'Minze has a humidity of {0:.0f}%'.format(get_humidity(10))))]
+    query = update.inline_query.query
+    results = [InlineQueryResultArticle(
+        id=uuid4(),
+        title=plant.name,
+        input_message_content=InputTextMessageContent('{0} has a humidity of {1:.0f}%'.format(plant.name, get_humidity(plant.port))))
+        for plant in Plants.get_plants(query)]
 
     update.inline_query.answer(results)
 
@@ -42,7 +45,7 @@ logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     level=logging.INFO)
 updater = Updater(config.telegram_api)
-updater.dispatcher.add_handler(CommandHandler('plant', plant))
+updater.dispatcher.add_handler(CommandHandler('plant', plant_response))
 updater.dispatcher.add_handler(CallbackQueryHandler(selected_plant))
 updater.dispatcher.add_handler(InlineQueryHandler(inline_query))
 updater.start_polling()

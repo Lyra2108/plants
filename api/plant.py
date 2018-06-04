@@ -17,3 +17,18 @@ class Plant:
 
     def get_binary_port(self):
         return '{:d}'.format(self.port).encode()
+
+
+class Plants:
+    plants = [Plant(name='Minze', port=10), Plant(name='Chili', port=9)]
+
+    @staticmethod
+    def get_plants(query):
+        query = query.strip(' ')
+        if query.isdigit():
+            return [plant for plant in Plants.plants if plant.port == int(query)]
+        return [plant for plant in Plants.plants if plant.name.lower().find(query.lower()) > -1]
+
+    @staticmethod
+    def all():
+        return Plants.plants
