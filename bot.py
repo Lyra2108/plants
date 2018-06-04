@@ -27,11 +27,23 @@ def selected_plant(bot, update):
                           message_id=query.message.message_id)
 
 
+def inline_query(bot, update):
+    results = [
+        InlineQueryResultArticle(
+            id=uuid4(),
+            title="Minze",
+            input_message_content=InputTextMessageContent(
+                'Minze has a humidity of {0:.0f}%'.format(get_humidity(10))))]
+
+    update.inline_query.answer(results)
+
+
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     level=logging.INFO)
 updater = Updater(config.telegram_api)
 updater.dispatcher.add_handler(CommandHandler('plant', plant))
 updater.dispatcher.add_handler(CallbackQueryHandler(selected_plant))
+updater.dispatcher.add_handler(InlineQueryHandler(inline_query))
 updater.start_polling()
 updater.idle()
