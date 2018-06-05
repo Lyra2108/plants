@@ -1,4 +1,3 @@
-import locale
 import logging
 import re
 from gettext import gettext as _, translation
@@ -7,8 +6,8 @@ from uuid import uuid4
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, InlineQueryResultArticle, InputTextMessageContent
 from telegram.ext import Updater, CommandHandler, CallbackQueryHandler, InlineQueryHandler
 
-import config
 from api.plant import get_humidity, Plants
+from telegram_bot import config
 
 
 def plant_response(bot, update):
