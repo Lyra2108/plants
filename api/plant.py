@@ -3,7 +3,7 @@ from serial import Serial
 
 def get_humidity(plant):
     connection = Serial('/dev/ttyUSB0', 9600)
-    binary_string = plant.strip(' ').encode()
+    binary_string = str(plant).strip(' ').encode()
     connection.write(binary_string)
     connection.flushOutput()
     return (1.0 - (int(connection.readline()) / 1023.0)) * 100
@@ -20,7 +20,7 @@ class Plant:
 
 
 class Plants:
-    plants = [Plant(name='Minze', port=10), Plant(name='Chili', port=9)]
+    plants = [Plant(name='Forelle', port=10), Plant(name='Lilie', port=9)]
 
     @staticmethod
     def get_plants(query):

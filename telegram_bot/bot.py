@@ -36,21 +36,30 @@ def inline_query(bot, update):
     results = [InlineQueryResultArticle(
         id=uuid4(),
         title=plant.name,
-        input_message_content=InputTextMessageContent(_('{0} has a humidity of {1:.0f}%').format(plant.name, get_humidity(plant.port))))
+        input_message_content=InputTextMessageContent(
+            _('{0} has a humidity of {1:.0f}%').format(plant.name, get_humidity(plant.port))))
         for plant in Plants.get_plants(query)]
 
     update.inline_query.answer(results)
 
 
-logging.basicConfig(
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    level=logging.INFO)
-trans = translation('messages', localedir='locales', languages=[config.language])
-trans.install()
-_ = trans.gettext
-updater = Updater(config.telegram_api)
-updater.dispatcher.add_handler(CommandHandler('plant', plant_response))
-updater.dispatcher.add_handler(CallbackQueryHandler(selected_plant))
-updater.dispatcher.add_handler(InlineQueryHandler(inline_query))
-updater.start_polling()
-updater.idle()
+def main():
+    logging.basicConfig(
+        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+        level=logging.INFO,
+        filename='log.txt')
+
+    trans = translation('messages', localedir='locales', languages=[config.language])
+    trans.install()
+    _ = trans.gettext
+
+    updater = Updater(config.telegram_api)
+    updater.dispatcher.add_handler(CommandHandler('plant', plant_response))
+    updater.dispatcher.add_handler(CallbackQueryHandler(selected_plant))
+    updater.dispatcher.add_handler(InlineQueryHandler(inline_query))
+    updater.start_polling()
+    updater.idle()
+
+
+if __name__ == "__main__":
+    main()
