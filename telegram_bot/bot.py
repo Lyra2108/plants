@@ -9,6 +9,15 @@ from telegram.ext import Updater, CommandHandler, CallbackQueryHandler, InlineQu
 from api.plant import get_humidity, Plants
 from telegram_bot import config
 
+logging.basicConfig(
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    level=logging.INFO,
+    filename='log.txt')
+
+trans = translation('messages', localedir='locales', languages=[config.language])
+trans.install()
+_ = trans.gettext
+
 
 def plant_response(bot, update):
     plant_number = re.sub('^/plant *', '', update.message.text)
@@ -44,15 +53,6 @@ def inline_query(bot, update):
 
 
 def main():
-    logging.basicConfig(
-        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-        level=logging.INFO,
-        filename='log.txt')
-
-    trans = translation('messages', localedir='locales', languages=[config.language])
-    trans.install()
-    _ = trans.gettext
-
     updater = Updater(config.telegram_api)
     updater.dispatcher.add_handler(CommandHandler('plant', plant_response))
     updater.dispatcher.add_handler(CallbackQueryHandler(selected_plant))
