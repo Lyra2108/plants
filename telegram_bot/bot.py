@@ -29,9 +29,7 @@ def plant_response(bot, update):
             update.message.reply_text(_('{0} has a humidity of {1:.0f}%').format(plant.name, humidity))
             return
 
-    keyboard = [[InlineKeyboardButton(plant.name, callback_data=plant.id) for plant in Plants.all()]]
-    reply_markup = InlineKeyboardMarkup(keyboard)
-    update.message.reply_text(_('Please choose:'), reply_markup=reply_markup)
+    display_choose_keyboard(bot, update.message.chat_id)
 
 
 def selected_plant(bot, update):
@@ -40,6 +38,8 @@ def selected_plant(bot, update):
     bot.edit_message_text(text=_("{0} has a humidity of {1:.0f}%").format(plant.name, get_humidity(plant.port)),
                           chat_id=query.message.chat_id,
                           message_id=query.message.message_id)
+
+    display_choose_keyboard(bot, query.message.chat_id)
 
 
 def plants_response(bot, update):
@@ -52,8 +52,6 @@ def plants_response(bot, update):
     update.message.reply_markdown(text)
 
 
-
-
 def inline_query(bot, update):
     query = update.inline_query.query
     results = [InlineQueryResultArticle(
@@ -64,6 +62,13 @@ def inline_query(bot, update):
         for plant in Plants.get_plants(query)]
 
     update.inline_query.answer(results)
+
+
+def display_choose_keyboard(bot, chat_id):
+    keyboard = [[InlineKeyboardButton(plant.name, callback_data=plant.id) for plant in Plants.all()]]
+    bot.send_message(text=_('Please choose:'),
+                     reply_markup=(InlineKeyboardMarkup(keyboard)),
+                     chat_id=chat_id)
 
 
 def main():
