@@ -12,6 +12,7 @@ def get_humidity(plant):
 class Plant:
 
     def __init__(self, name, port):
+        self.id = port
         self.name = name
         self.port = port
 
@@ -28,6 +29,12 @@ class Plants:
         if query.isdigit():
             return [plant for plant in Plants.plants if plant.port == int(query)]
         return [plant for plant in Plants.plants if plant.name.lower().find(query.lower()) > -1]
+
+    @staticmethod
+    def get_plant_by_id(plant_id):
+        for plant in Plants.plants:
+            if plant.id == int(plant_id):
+                return plant
 
     @staticmethod
     def all():

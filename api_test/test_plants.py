@@ -23,3 +23,12 @@ def test_get_all_plants(monkeypatch):
     monkeypatch.setattr(Plants, "plants", plants)
 
     assert plants == Plants.all()
+
+
+def test_get_plant_by_id(monkeypatch):
+    expected_plant = Plant(name='Minze', port=10)
+    monkeypatch.setattr(Plants, "plants", [expected_plant, Plant(name='Chili', port=9)])
+
+    plant = Plants.get_plant_by_id(10)
+
+    assert plant == expected_plant
