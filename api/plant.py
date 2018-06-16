@@ -1,3 +1,4 @@
+from gettext import gettext as _
 from serial import Serial
 
 
@@ -17,6 +18,9 @@ class Plant:
         connection.write(binary_string)
         connection.flushOutput()
         return (1.0 - (int(connection.readline()) / 1023.0)) * 100
+
+    def get_humidity_display_text(self):
+        return _('{0} has a humidity of {1:.0f}%').format(self.name, self.get_humidity())
 
 
 class Plants:
