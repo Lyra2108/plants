@@ -6,13 +6,12 @@ from uuid import uuid4
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, InlineQueryResultArticle, InputTextMessageContent
 from telegram.ext import Updater, CommandHandler, CallbackQueryHandler, InlineQueryHandler
 
-from api.plant import get_humidity, Plants
+from api.plant import Plants
 from telegram_bot import config
 
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    level=logging.INFO,
-    filename='log.txt')
+    level=logging.INFO)
 
 trans = translation('messages', localedir='locales', languages=[config.language])
 trans.install()
@@ -25,7 +24,7 @@ def plant_response(bot, update):
         plants = Plants.get_plants(plant_number)
         if plants:
             plant = plants[0]
-            humidity = get_humidity(plant.port)
+            humidity = plant.get_humidity()
             update.message.reply_text(_('{0} has a humidity of {1:.0f}%').format(plant.name, humidity))
             return
 
@@ -35,7 +34,7 @@ def plant_response(bot, update):
 def selected_plant(bot, update):
     query = update.callback_query
     plant = Plants.get_plant_by_id(query.data)
-    bot.edit_message_text(text=_("{0} has a humidity of {1:.0f}%").format(plant.name, get_humidity(plant.port)),
+    bot.edit_message_text(text=_("{0} has a humidity of {1:.0f}%").format(plant.name, plant.get_humidity()),
                           chat_id=query.message.chat_id,
                           message_id=query.message.message_id)
 
@@ -47,7 +46,7 @@ def plants_response(bot, update):
     text = "```\n" + \
            "| {0:^15} | {1:^5} |\n".format(_("Plant"), "%") + \
            "|{0:-<17}|{0:-<7}|\n".format('') + \
-           '\n'.join(['| {0:15.15} | {1:4.0f}% |'.format(plant.name, get_humidity(plant.port)) for plant in plants]) + \
+           '\n'.join(['| {0:15.15} | {1:4.0f}% |'.format(plant.name, plant.get_humidity()) for plant in plants]) + \
            '```'
     update.message.reply_markdown(text)
 
@@ -58,7 +57,7 @@ def inline_query(bot, update):
         id=uuid4(),
         title=plant.name,
         input_message_content=InputTextMessageContent(
-            _('{0} has a humidity of {1:.0f}%').format(plant.name, get_humidity(plant.port))))
+            _('{0} has a humidity of {1:.0f}%').format(plant.name, plant.get_humidity())))
         for plant in Plants.get_plants(query)]
 
     update.inline_query.answer(results)
