@@ -40,6 +40,18 @@ def selected_plant(bot, update):
                           message_id=query.message.message_id)
 
 
+def plants_response(bot, update):
+    plants = Plants.all()
+    text = "```\n" + \
+           "| {0:^15} | {1:^5} |\n".format(_("Plant"), "%") + \
+           "|{0:-<17}|{0:-<7}|\n".format('') + \
+           '\n'.join(['| {0:15.15} | {1:4.0f}% |'.format(plant.name, get_humidity(plant.port)) for plant in plants]) + \
+           '```'
+    update.message.reply_markdown(text)
+
+
+
+
 def inline_query(bot, update):
     query = update.inline_query.query
     results = [InlineQueryResultArticle(
@@ -55,6 +67,7 @@ def inline_query(bot, update):
 def main():
     updater = Updater(config.telegram_api)
     updater.dispatcher.add_handler(CommandHandler('plant', plant_response))
+    updater.dispatcher.add_handler(CommandHandler('plants', plants_response))
     updater.dispatcher.add_handler(CallbackQueryHandler(selected_plant))
     updater.dispatcher.add_handler(InlineQueryHandler(inline_query))
     updater.start_polling()

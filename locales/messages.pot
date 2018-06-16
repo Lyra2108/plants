@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: translate@sblume.eu\n"
-"POT-Creation-Date: 2018-06-05 09:08+0200\n"
+"POT-Creation-Date: 2018-06-16 21:14+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,14 +17,19 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.6.0\n"
 
-#: bot.py:24
+#: telegram_bot/bot.py:46
+msgid "Plant"
+msgstr ""
+
+#: telegram_bot/bot.py:33
 msgid "Please choose:"
 msgstr ""
 
-#: bot.py:19 bot.py:29
+#: telegram_bot/bot.py:28 telegram_bot/bot.py:38
 msgid "The plant's humidity is {0:.0f}%"
 msgstr ""
 
-#: bot.py:39
+#: telegram_bot/bot.py:61
 msgid "{0} has a humidity of {1:.0f}%"
 msgstr ""
+
