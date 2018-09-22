@@ -1,6 +1,6 @@
 import logging
 import re
-from gettext import gettext as _, translation
+from gettext import translation
 from uuid import uuid4
 
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, InlineQueryResultArticle, InputTextMessageContent

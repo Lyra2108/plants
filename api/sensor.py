@@ -25,3 +25,13 @@ class USBSensor(Sensor):
         connection.write(binary_string)
         connection.flushOutput()
         return int(connection.readline())
+
+
+class HTMLSensor(Sensor):
+
+    def __init__(self, url, plant_name):
+        self.url = url
+        self.plant_name = plant_name
+
+    def measure_raw_value(self):
+        pass
